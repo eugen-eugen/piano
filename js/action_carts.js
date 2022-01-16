@@ -170,4 +170,7 @@ function stopNote(event){
         osc.gain.linearRampToValueAtTime(0, context.currentTime + 0.2);
     }
     event.target.classList.remove("pressed");
+    document.getElementById("baseLatency").innerText=context.baseLatency;
+    document.getElementById("outputLatency").innerText=context.outputLatency;
+
 }
