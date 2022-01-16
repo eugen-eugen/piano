@@ -134,8 +134,6 @@ function mout(event){
 
 function playNote(event){
     event.target.classList.add("pressed");
-    const oktave=parseInt(event.target.id.substring(1,2));
-    const note=event.target.id.substring(2, 4);
     var osc=oscillators[event.target.id];
     if (osc)
     {
@@ -143,6 +141,8 @@ function playNote(event){
         osc.gain.linearRampToValueAtTime(0, context.currentTime + 2)
         return;
     }
+    const oktave=parseInt(event.target.id.substring(1,2));
+    const note=event.target.id.substring(2, 4);
     osc=context.createOscillator();
     var g = context.createGain();
     g.gain.value=0.25;
