@@ -139,10 +139,11 @@ function playNote(event){
     osc=context.createOscillator();
     var g = context.createGain();
     g.gain.value=0.25;
+    g.gain.linearRampToValueAtTime(0.25, context.currentTime + 0.1)
     g.gain.linearRampToValueAtTime(0, context.currentTime + 2)
     osc.connect(g);
     g.connect(context.destination);
-    oscillators[event.target.id]=osc;
+    oscillators[event.target.id]={osc: osc, gain: g.gain};
     osc.frequency.value=27.5*2**(oktave)*shift2A[note];
     var wave = waveTable["piano"];
     for (let i = wave.length-1; i >= 0; i--) {
@@ -159,7 +160,7 @@ function playNote(event){
 function stopNote(event){ 
     var osc=oscillators[event.target.id];
     if (osc){
-        osc.stop();
+        osc.gain.linearRampToValueAtTime(0, context.currentTime + 0.2);
     }
     event.target.classList.remove("pressed");
 }
