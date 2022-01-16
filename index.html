@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <link rel="stylesheet" type="text/css" href="css/layout.css">
+        <script src="js/wavetable-builder.js"></script>
         <script src="js/action_carts.js"></script>
         <title>Kleines Piano</title>
     </head>
@@ -11,7 +12,8 @@
         
         <div class="pianobody">
         <div id="keyboard" onmouseleave="mout(event)" onmousedown="mdown(event)" onmouseup="mup(event)" onmouseover="mover(event)" onmouseout="mout(event)" 
-              ontouchstart="tstart(event)" ontouchend="tend(event)" ontouchmove="tmove(event)">
+              ontouchstart="tstart(event)" ontouchend="tend(event)" ontouchmove="tmove(event)"  
+              ondragstart="return false;" ondrop="return false;">
             <div class="white" id="o0a"></div>
             <div class="white" id="o0b"></div>
             <div class="white" id="o1c"></div>
