@@ -34,7 +34,7 @@ onload=function(){
     });
 }
 
-const context = new AudioContext();
+const context = new AudioContext({latencyHint: 0.01});
 osc=context.createOscillator();
 osc.connect(context.destination);
 
