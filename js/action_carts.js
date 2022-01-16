@@ -53,27 +53,20 @@ const shift2A={
     "b": 1*sqrt12*sqrt12,
 }
 
-var real = new Float32Array(4);
-var imag = new Float32Array(4);
+var real = new Float32Array(100);
+var imag = new Float32Array(100);
 
-real[0] =0;
-imag[0] = 0;
-real[1] = 1;
-imag[1] = 0;
-real[2] = 0;
-imag[2] = 1;
-real[3] = 0.5;
-imag[3] = 0;
-real[4] = 0.25;
-imag[4] = 0.25;
-real[5] = 0.20;
-imag[5] = 0.20;
-real[6] = 0.15;
-imag[6] = 0.15;
-real[7] = 0.10;
-imag[7] = 0.10;
-
-var wave = context.createPeriodicWave(real, imag, {disableNormalization: true});
+real=[0, 0, -0.203569, 0.5, -0.401676, 0.137128, -0.104117, 0.115965,
+    -0.004413, 0.067884, -0.00888, 0.0793, -0.038756, 0.011882,
+    -0.030883, 0.027608, -0.013429, 0.00393, -0.014029, 0.00972,
+    -0.007653, 0.007866, -0.032029, 0.046127, -0.024155, 0.023095,
+    -0.005522, 0.004511, -0.003593, 0.011248, -0.004919, 0.008505];
+imag= [0, 0.147621, 0, 0.000007, -0.00001, 0.000005, -0.000006, 0.000009,
+        0, 0.000008, -0.000001, 0.000014, -0.000008, 0.000003,
+        -0.000009, 0.000009, -0.000005, 0.000002, -0.000007, 0.000005,
+        -0.000005, 0.000005, -0.000023, 0.000037, -0.000021, 0.000022,
+        -0.000006, 0.000005, -0.000004, 0.000014, -0.000007, 0.000012];
+waveTable=makeWaveTable(context);
 
 var oscillators={};
 var mDown = false;
@@ -91,21 +84,22 @@ function mdown(event){
 
 var nowTouchOver;
 function tend(event){
+    console.log("tend");
     key=document.elementFromPoint(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
     mDown=false;
     nowTouchOver=null;
-    console.log("tend", key);
    stopNote({target: key});
 }
 
 function tstart(event){
-   event.preventDefault();
-   console.log("tstart", event.target);
+    console.log("tstart");
+    event.preventDefault();
    mDown=true;
    playNote(event);
 }
 
 function tmove(event){
+    console.log("tmove", event.target);
     mDown=true;
     event.preventDefault();
     key=document.elementFromPoint(event.touches[0].clientX, event.touches[0].clientY);
@@ -118,16 +112,17 @@ function tmove(event){
             mover({target: keyin});
         }
     }
-    console.log("pmove", event.touches[0].clientX+"/"+event.touches[0].clientY, document.elementFromPoint(event.touches[0].clientX, event.touches[0].clientY));
 }
 
 function mover(event){
+    console.log("mover");
     if (mDown){
         playNote(event);
     }
 }
 
 function mout(event){
+    console.log("mout");
     if (event.target.id==="keyboard"){
         mup(event)
     }
@@ -142,20 +137,29 @@ function playNote(event){
     const note=event.target.id.substring(2, 4);
     var osc=oscillators[event.target.id];
     osc=context.createOscillator();
-    osc.setPeriodicWave(wave);
     var g = context.createGain();
     g.gain.value=0.25;
+    g.gain.linearRampToValueAtTime(0, context.currentTime + 2)
     osc.connect(g);
     g.connect(context.destination);
     oscillators[event.target.id]=osc;
     osc.frequency.value=27.5*2**(oktave)*shift2A[note];
+    var wave = waveTable["piano"];
+    for (let i = wave.length-1; i >= 0; i--) {
+        if (wave[i].freq <=osc.frequency){
+            osc.setPeriodicWave(wave[i].wave);
+            break;
+        }
+    }
     osc.start(0);
-    osc.stop(context.currentTime + 1);
+    osc.stop(context.currentTime + 3);
 
 }
 
 function stopNote(event){ 
     var osc=oscillators[event.target.id];
-    osc.stop();
+    if (osc){
+        osc.stop();
+    }
     event.target.classList.remove("pressed");
 }
