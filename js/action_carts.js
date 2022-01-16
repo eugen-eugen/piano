@@ -20,6 +20,7 @@ onload=function(){
         white.style.width=(witheWidth-2*borderWidth)+"px";
         white.style.height=(keyboardHeight-2*borderWidth) + "px";
         white.style.borderWidth=borderWidth;
+        white.innerHTML="*"
     });
     var blacks= Array.from(this.document.getElementsByClassName("black"));
     blacks.forEach(black => {
@@ -136,6 +137,12 @@ function playNote(event){
     const oktave=parseInt(event.target.id.substring(1,2));
     const note=event.target.id.substring(2, 4);
     var osc=oscillators[event.target.id];
+    if (osc)
+    {
+        osc.gain.linearRampToValueAtTime(0.25, context.currentTime + 0.1)
+        osc.gain.linearRampToValueAtTime(0, context.currentTime + 2)
+        return;
+    }
     osc=context.createOscillator();
     var g = context.createGain();
     g.gain.value=0.25;
@@ -153,7 +160,7 @@ function playNote(event){
         }
     }
     osc.start(0);
-    osc.stop(context.currentTime + 3);
+//    osc.stop(context.currentTime + 3);
 
 }
 
