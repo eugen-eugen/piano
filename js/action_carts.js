@@ -132,13 +132,13 @@ function mout(event){
     }
 }
 
+
 function playNote(event){
     event.target.classList.add("pressed");
     var osc=oscillators[event.target.id];
     if (osc)
     {
-        osc.gain.linearRampToValueAtTime(0.25, context.currentTime + 0.1)
-        osc.gain.linearRampToValueAtTime(0, context.currentTime + 2)
+        startSound(osc.gain)
         return;
     }
     const oktave=parseInt(event.target.id.substring(1,2));
@@ -146,9 +146,8 @@ function playNote(event){
     osc=context.createOscillator();
     var g = context.createGain();
     g.gain.value=0.25;
-    g.gain.linearRampToValueAtTime(0.25, context.currentTime + 0.1)
-    g.gain.linearRampToValueAtTime(0, context.currentTime + 2)
     osc.connect(g);
+    startSound(g.gain)
     g.connect(context.destination);
     oscillators[event.target.id]={osc: osc, gain: g.gain};
     osc.frequency.value=27.5*2**(oktave)*shift2A[note];
@@ -167,10 +166,17 @@ function playNote(event){
 function stopNote(event){ 
     var osc=oscillators[event.target.id];
     if (osc){
-        osc.gain.linearRampToValueAtTime(0, context.currentTime + 0.2);
+        osc.gain.linearRampToValueAtTime(0, context.currentTime + 0.5);
     }
     event.target.classList.remove("pressed");
-    document.getElementById("baseLatency").innerText=context.baseLatency;
-    document.getElementById("outputLatency").innerText=context.outputLatency;
+    //document.getElementById("baseLatency").innerText=context.baseLatency;
+    //document.getElementById("outputLatency").innerText=context.outputLatency;
 
+}
+
+function startSound(gain){
+    gain.cancelAndHoldAtTime(context.currentTime);
+    gain.exponentialRampToValueAtTime(0.05, context.currentTime)
+    gain.exponentialRampToValueAtTime(0.15, context.currentTime + 0.001)
+    gain.linearRampToValueAtTime(0, context.currentTime + 5)
 }
