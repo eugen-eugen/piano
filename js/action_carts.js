@@ -89,14 +89,14 @@ function tend(event){
     key=document.elementFromPoint(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
     mDown=false;
     nowTouchOver=null;
-   stopNote(key.id);
+   releaseKey({target: key});
 }
 
 function tstart(event){
     console.log("tstart");
     event.preventDefault();
    mDown=true;
-   playNote(event);
+   mdown(event);
 }
 
 function tmove(event){
