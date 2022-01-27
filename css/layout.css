@@ -1,6 +1,5 @@
 .pianobody{
     background-color: rgb(63, 4, 4);
-    padding-top: 50px;
     padding-left: 10px;
     padding-right: 10px;
     text-align: center;
@@ -33,6 +32,10 @@
 
 .black.pressed{
     background: linear-gradient(180deg, rgba(75,75,75,1) 0%,rgba(0,0,0,1) 5%);
+}
+
+.correct{
+    background: green;
 }
 
 #o0a.black {

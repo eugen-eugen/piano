@@ -11,6 +11,11 @@
     <body>
         
         <div class="pianobody">
+            <div style="background-color: black;height: 50px;width: 100%;margin-top: 10px;">
+                <div style="background-color: chartreuse;margin: 0 auto; width: 30%;display:flex; align-items: center; height: 100%;">
+                    <span id="score" style="background-color: chartreuse;margin: 0 auto ; width: 20%;vertical-align: middle; height: 50%;">Score</span>
+                </div>
+            </div>    
         <div id="keyboard" onmouseleave="mout(event)" onmousedown="mdown(event)" onmouseup="mup(event)" onmouseover="mover(event)" onmouseout="mout(event)" 
               ontouchstart="tstart(event)" ontouchend="tend(event)" ontouchmove="tmove(event)"  
               ondragstart="return false;" ondrop="return false;">
@@ -104,9 +109,5 @@
             <div class="black" id="o7a#"></div>
         </div>
         </div>
-        <p>Latency
-            <ul id="baseLatency">0</ul>
-            <ul id="outputLatency">0</ul>
-        </p>
     </body>
 </html>

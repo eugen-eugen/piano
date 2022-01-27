@@ -75,12 +75,12 @@ var mDown = false;
 function mup(event){
     console.log("mup:");
     mDown=false;
-   stopNote(event);
+   releaseKey(event);
 }
 function mdown(event){
    console.log("mdown");
    mDown=true;
-   playNote(event);
+   pressKey(event);
 }
 
 var nowTouchOver;
@@ -89,7 +89,7 @@ function tend(event){
     key=document.elementFromPoint(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
     mDown=false;
     nowTouchOver=null;
-   stopNote({target: key});
+   stopNote(key.id);
 }
 
 function tstart(event){
@@ -118,7 +118,7 @@ function tmove(event){
 function mover(event){
     console.log("mover");
     if (mDown){
-        playNote(event);
+        pressKey(event);
     }
 }
 
@@ -128,28 +128,33 @@ function mout(event){
         mup(event)
     }
     if (mDown){
-        stopNote(event);
+        releaseKey(event);
     }
 }
 
 
-function playNote(event){
+function pressKey(event){
+    stopQuiz(event.target.id);
     event.target.classList.add("pressed");
-    var osc=oscillators[event.target.id];
+    playNote(event.target.id);
+}
+
+function playNote(id){
+    var osc=oscillators[id];
     if (osc)
     {
         startSound(osc.gain)
         return;
     }
-    const oktave=parseInt(event.target.id.substring(1,2));
-    const note=event.target.id.substring(2, 4);
+    const oktave=parseInt(id.substring(1,2));
+    const note=id.substring(2, 4);
     osc=context.createOscillator();
     var g = context.createGain();
     g.gain.value=0.25;
     osc.connect(g);
-    startSound(g.gain)
     g.connect(context.destination);
-    oscillators[event.target.id]={osc: osc, gain: g.gain};
+    startSound(g.gain)
+    oscillators[id]={osc: osc, gain: g.gain};
     osc.frequency.value=27.5*2**(oktave)*shift2A[note];
     var wave = waveTable["piano"];
     for (let i = wave.length-1; i >= 0; i--) {
@@ -159,19 +164,19 @@ function playNote(event){
         }
     }
     osc.start(0);
-//    osc.stop(context.currentTime + 3);
 
 }
 
-function stopNote(event){ 
-    var osc=oscillators[event.target.id];
+function releaseKey(event){
+    event.target.classList.remove("pressed");
+    stopNote(event.target.id);
+    startQuiz();
+}
+function stopNote(id){ 
+    var osc=oscillators[id];
     if (osc){
         osc.gain.linearRampToValueAtTime(0, context.currentTime + 0.5);
     }
-    event.target.classList.remove("pressed");
-    //document.getElementById("baseLatency").innerText=context.baseLatency;
-    //document.getElementById("outputLatency").innerText=context.outputLatency;
-
 }
 
 function startSound(gain){
@@ -179,4 +184,36 @@ function startSound(gain){
     gain.exponentialRampToValueAtTime(0.05, context.currentTime)
     gain.exponentialRampToValueAtTime(0.15, context.currentTime + 0.001)
     gain.linearRampToValueAtTime(0, context.currentTime + 5)
+}
+var quiz=null;
+var score=0;
+function startQuiz(){
+    if (null!=quiz){
+        return;
+    }
+    oktave=Math.round(Math.random()*4)+3;
+    note=Object.keys(shift2A)[Math.round(Math.random()*11)];
+    quiz={note: "o"+oktave+note};
+    quiz.timer=setTimeout(()=>{
+        cs=document.getElementsByClassName("correct");
+        Array.from(cs).forEach(c=>c.classList.remove("correct"));
+        quiz.sounds=true; playNote(quiz.note)
+    }, 3000);
+    quiz.guesses=0;
+}
+function stopQuiz(id){
+    if (null===quiz || null===quiz.sounds){
+        return;
+    }
+    quiz.guesses++;
+    if (id===quiz.note || quiz.guesses>=4){
+        score+=3-quiz.guesses;
+        document.getElementById("score").innerHTML="Score: "+score;
+        if (quiz.guesses>=4){
+            document.getElementById(quiz.note).classList.add("correct");
+        }
+        quiz=null;
+        return
+    }
+ 
 }
