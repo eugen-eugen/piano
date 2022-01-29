@@ -185,6 +185,7 @@ function startSound(gain){
     gain.exponentialRampToValueAtTime(0.15, context.currentTime + 0.001)
     gain.linearRampToValueAtTime(0, context.currentTime + 5)
 }
+
 var quiz=null;
 var score=0;
 function startQuiz(){
@@ -195,6 +196,8 @@ function startQuiz(){
     note=Object.keys(shift2A)[Math.round(Math.random()*11)];
     quiz={note: "o"+oktave+note};
     quiz.timer=setTimeout(()=>{
+        noblink("red");
+        noblink("green");
         cs=document.getElementsByClassName("correct");
         Array.from(cs).forEach(c=>c.classList.remove("correct"));
         quiz.sounds=true; playNote(quiz.note)
@@ -202,18 +205,25 @@ function startQuiz(){
     quiz.guesses=0;
 }
 function stopQuiz(id){
-    if (null===quiz || null===quiz.sounds){
-        return;
-    }
     quiz.guesses++;
-    if (id===quiz.note || quiz.guesses>=4){
+    if (id===quiz.note) {
+        score+=3-quiz.guesses;
+        blink("green")
+        quiz=null;
+    } else if (quiz.guesses>=3){
         score+=3-quiz.guesses;
         document.getElementById("score").innerHTML="Score: "+score;
-        if (quiz.guesses>=4){
             document.getElementById(quiz.note).classList.add("correct");
-        }
+            blink("red")
         quiz=null;
-        return
     }
- 
+ }
+
+function blink(color){
+    redlamp=document.getElementById("lamp-"+color);
+    redlamp.classList.add("blinking-"+color)
+}
+function noblink(color){
+    redlamp=document.getElementById("lamp-"+color);
+    redlamp.classList.remove("blinking-"+color)
 }

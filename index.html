@@ -12,9 +12,25 @@
         
         <div class="pianobody">
             <div style="background-color: black;height: 50px;width: 100%;margin-top: 10px;">
-                <div style="background-color: chartreuse;margin: 0 auto; width: 30%;display:flex; align-items: center; height: 100%;">
-                    <span id="score" style="background-color: chartreuse;margin: 0 auto ; width: 20%;vertical-align: middle; height: 50%;">Score</span>
-                </div>
+                <table width="50%" style="margin: 0 auto; width: 30%; height: 100%;">
+                    <thead style="width: 100%">
+                        <tr>
+                            <th style="width:10%">
+                                <div id="lamp-red" class="lamp" style="background-color: rgb(100, 0, 0)"></div>
+                            </th>
+                            <th style="width:10%"></th>
+                            <th style="width:60%">
+                                <div style="background-color: chartreuse;margin: 0 auto; width: 100%;display:flex; align-items: center; height: 100%;">
+                                    <span id="score" style="background-color: chartreuse;margin: 0 auto ;vertical-align: middle; height: 50%;">Score</span>
+                                </div>
+                            </th>
+                            <th style="width:10%"></th>
+                            <th style="width:10%">
+                                <div id="lamp-green" class="lamp" style="background-color: rgb(0, 80, 0)"></div>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
             </div>    
         <div id="keyboard" onmouseleave="mout(event)" onmousedown="mdown(event)" onmouseup="mup(event)" onmouseover="mover(event)" onmouseout="mout(event)" 
               ontouchstart="tstart(event)" ontouchend="tend(event)" ontouchmove="tmove(event)"  
